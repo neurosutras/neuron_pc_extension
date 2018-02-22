@@ -9,6 +9,11 @@ import sys
 import os
 import time
 import pprint
+try:
+    from mpi4py import MPI
+    from neuron import h
+except ImportError:
+    raise ImportError('pc_extension: problem with importing neuron')
 
 
 class Context(object):
@@ -89,11 +94,6 @@ class ParallelContextInterface(object):
 
         :param procs_per_worker: int
         """
-        try:
-            from mpi4py import MPI
-            from neuron import h
-        except ImportError:
-            raise ImportError('pc_extension: problem with importing neuron')
         self.global_comm = MPI.COMM_WORLD
         self.procs_per_worker = procs_per_worker
         self.pc = h.ParallelContext()
