@@ -134,21 +134,33 @@ class ParallelContextInterface(object):
         """
         print 'global_rank: %i; local_rank: %i; entering wait_for_all_workers\r' % (self.global_rank, self.rank)
         sys.stdout.flush()
-        if self.rank == 0:
-            self.pc.take(key)
-            count = self.pc.upkscalar()
-            self.pc.post(key, count + 1)
-            while True:
-                # With a large number of ranks, pc.take() is more robust than pc.look()
-                self.pc.take(key)
-                count = self.pc.upkscalar()
-                if count == self.num_workers:
-                    self.pc.post(key, count)
-                    return
-                else:
-                    self.pc.post(key, count)
-                    # This pause is required to prevent the same worker from repeatedly checking the same message.
-                    time.sleep(0.1)
+        global_ranks = [int(self.procs_per_worker * i) for i in xrange(self.num_workers)]
+        incremented = False
+        iter_count = 0
+        global_count = 0
+        if self.global_rank in global_ranks:
+            while global_count < self.num_workers:
+                for this_rank in global_ranks:
+                    if self.global_rank == this_rank:
+                        print 'global_rank: %i; local_rank: %i; inside the take/post loop; %i iterations\r' % \
+                              (self.global_rank, self.rank, iter_count)
+                        sys.stdout.flush()
+                        self.pc.take(key)
+                        count = self.pc.upkscalar()
+                        if not incremented:
+                            count += 1
+                            incremented = True
+                        global_count = count
+                        self.pc.post(key, count)
+                        time.sleep(0.1)
+                iter_count += 1
+            print 'global_rank: %i; local_rank: %i; exiting the take/post loop; %i iterations\r' % \
+                  (self.global_rank, self.rank, iter_count)
+            sys.stdout.flush()
+            return
+        print 'global_rank: %i; local_rank: %i; exiting the take/post loop; %i iterations\r' % \
+              (self.global_rank, self.rank, iter_count)
+        return
 
     def apply_sync(self, func, *args, **kwargs):
         """
