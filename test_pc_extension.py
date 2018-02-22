@@ -59,12 +59,6 @@ def main(procs_per_worker):
     sys.stdout.flush()
     time.sleep(1.)
 
-    print ': context.interface.apply(test, 1, 2, third=3)'
-    pprint.pprint(context.interface.apply(test, 1, 2, third=3))
-    print '\n'
-    sys.stdout.flush()
-    time.sleep(1.)
-
     start1 = 0
     end1 = start1 + int(context.interface.global_size)
     start2 = end1
@@ -85,8 +79,15 @@ def main(procs_per_worker):
     sys.stdout.flush()
     time.sleep(1.)
 
+    print ': This is where the problems lie:'
+    print ': context.interface.apply(test, 1, 2, third=3)'
+    pprint.pprint(context.interface.apply(test, 1, 2, third=3))
+    print '\n'
+    sys.stdout.flush()
+    time.sleep(1.)
+
     result4 = context.interface.get('context.interface.global_rank')
-    print 'before interface stop: %i/%i total processes detected\n' % (len(set(result4)), context.interface.global_size)
+    print 'before interface stop: %i/%i workers detected\n' % (len(set(result4)), context.interface.num_workers)
     sys.stdout.flush()
     time.sleep(1.)
     context.interface.stop()
