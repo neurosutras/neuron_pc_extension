@@ -86,7 +86,7 @@ def main(procs_per_worker):
     sys.stdout.flush()
     time.sleep(1.)
 
-    print 'context.interface.get(\'context.interface.global_rank\')'
+    print ': context.interface.get(\'context.interface.global_rank\')'
     result4 = context.interface.get('context.interface.global_rank')
     print 'before interface stop: %i/%i workers detected\n' % (len(set(result4)), context.interface.num_workers)
     sys.stdout.flush()
