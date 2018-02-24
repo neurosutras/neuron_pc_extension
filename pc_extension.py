@@ -138,17 +138,17 @@ class ParallelContextInterface(object):
         global_count = 0
         iter_count = 0
         while global_count < self.num_workers - 1:
-            print 'global_rank: %i; inside the master_wait_for_all_workers loop; %i iterations\r' % \
-                  (self.global_rank, iter_count)
-            sys.stdout.flush()
+            # print 'global_rank: %i; inside the master_wait_for_all_workers loop; %i iterations\r' % \
+            #      (self.global_rank, iter_count)
+            # sys.stdout.flush()
             self.pc.take(key)
             count = self.pc.upkscalar()
             global_count = count
             self.pc.post(key, count)
             time.sleep(0.1)
             iter_count += 1
-        print 'global_rank: %i; exiting master_wait_for_all_workers; %i iterations\r' % \
-              (self.global_rank, iter_count - 1)
+        # print 'global_rank: %i; exiting master_wait_for_all_workers; %i iterations\r' % \
+        #      (self.global_rank, iter_count - 1)
         sys.stdout.flush()
         return
 
@@ -166,8 +166,8 @@ class ParallelContextInterface(object):
             while global_count < self.num_workers:
                 for this_rank in global_ranks:
                     if self.global_rank == this_rank:
-                        print 'global_rank: %i; local_rank: %i; inside the wait_for_all_workers loop; %i ' \
-                              'iterations\r' % (self.global_rank, self.rank, iter_count)
+                        # print 'global_rank: %i; local_rank: %i; inside the wait_for_all_workers loop; %i ' \
+                        #      'iterations\r' % (self.global_rank, self.rank, iter_count)
                         sys.stdout.flush()
                         self.pc.take(key)
                         count = self.pc.upkscalar()
@@ -178,8 +178,8 @@ class ParallelContextInterface(object):
                         self.pc.post(key, count)
                         time.sleep(0.1)
                 iter_count += 1
-            print 'global_rank: %i; local_rank: %i; exiting wait_for_all_workers; %i iterations\r' % \
-                  (self.global_rank, self.rank, iter_count - 1)
+            # print 'global_rank: %i; local_rank: %i; exiting wait_for_all_workers; %i iterations\r' % \
+            #      (self.global_rank, self.rank, iter_count - 1)
             sys.stdout.flush()
         else:
             print 'global_rank: %i; local_rank: %i; is just along for the ride\r' % (self.global_rank, self.rank)
