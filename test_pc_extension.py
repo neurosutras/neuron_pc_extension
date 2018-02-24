@@ -74,9 +74,15 @@ def main(procs_per_worker):
     result3 = context.interface.map_async(test, range(start1, end1),range(start2, end2))
     while not result3.ready():
         time.sleep(0.1)
+    print '\n: map_async took %.1f s to compute\n' % (time.time() - time_stamp)
+    sys.stdout.flush()
+    time.sleep(1.)
+    time_stamp = time.time()
     result3 = result3.get()
+    print '\n: map_async took %.1f s to get\n' % (time.time() - time_stamp)
+    sys.stdout.flush()
+    time.sleep(1.)
     pprint.pprint(result3)
-    print '\n: map_async took %.1f s\n' % (time.time() - time_stamp)
     sys.stdout.flush()
     time.sleep(1.)
 
