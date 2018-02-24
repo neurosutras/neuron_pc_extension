@@ -126,14 +126,38 @@ class ParallelContextInterface(object):
                self.num_workers)
         time.sleep(0.1)
 
+    def master_wait_for_all_workers(self, key):
+        """
+        Prevents the master from taking a job, or even checking for job results, until all workers have completed the
+        operation associated with the specified key.
+        :param key: int or str
+        """
+        if self.global_rank != 0:
+            raise ValueError('pc_extension: global_rank: %i; should not have entered master_wait_for_all_workers' %
+                             self.global_rank)
+        global_count = 0
+        iter_count = 0
+        while global_count < self.num_workers - 1:
+            print 'global_rank: %i; inside the master_wait_for_all_workers loop; %i iterations\r' % \
+                  (self.global_rank, iter_count)
+            sys.stdout.flush()
+            self.pc.take(key)
+            count = self.pc.upkscalar()
+            global_count = count
+            self.pc.post(key, count)
+            time.sleep(0.1)
+            iter_count += 1
+        print 'global_rank: %i; exiting master_wait_for_all_workers; %i iterations\r' % \
+              (self.global_rank, iter_count - 1)
+        sys.stdout.flush()
+        return
+
     def wait_for_all_workers(self, key):
         """
-        Prevents any worker from returning until all workers have completed an operation associated with the specified
+        Prevents any worker from returning until all workers have completed the operation associated with the specified
         key.
         :param key: int or str
         """
-        print 'global_rank: %i; local_rank: %i; entering wait_for_all_workers\r' % (self.global_rank, self.rank)
-        sys.stdout.flush()
         global_ranks = [int(self.procs_per_worker * i) for i in xrange(self.num_workers)]
         incremented = False
         iter_count = 0
@@ -142,8 +166,8 @@ class ParallelContextInterface(object):
             while global_count < self.num_workers:
                 for this_rank in global_ranks:
                     if self.global_rank == this_rank:
-                        print 'global_rank: %i; local_rank: %i; inside the take/post loop; %i iterations\r' % \
-                              (self.global_rank, self.rank, iter_count)
+                        print 'global_rank: %i; local_rank: %i; inside the wait_for_all_workers loop; %i ' \
+                              'iterations\r' % (self.global_rank, self.rank, iter_count)
                         sys.stdout.flush()
                         self.pc.take(key)
                         count = self.pc.upkscalar()
@@ -152,14 +176,14 @@ class ParallelContextInterface(object):
                             incremented = True
                         global_count = count
                         self.pc.post(key, count)
-                        time.sleep(0.1)
+                        # time.sleep(0.1)
                 iter_count += 1
-            print 'global_rank: %i; local_rank: %i; exiting the take/post loop; %i iterations\r' % \
-                  (self.global_rank, self.rank, iter_count)
+            print 'global_rank: %i; local_rank: %i; exiting wait_for_all_workers; %i iterations\r' % \
+                  (self.global_rank, self.rank, iter_count - 1)
             sys.stdout.flush()
-            return
-        print 'global_rank: %i; local_rank: %i; exiting the take/post loop; %i iterations\r' % \
-              (self.global_rank, self.rank, iter_count)
+        else:
+            print 'global_rank: %i; local_rank: %i; is just along for the ride\r' % (self.global_rank, self.rank)
+            sys.stdout.flush()
         return
 
     def apply_sync(self, func, *args, **kwargs):
@@ -179,6 +203,8 @@ class ParallelContextInterface(object):
             keys = []
             for i in xrange(self.num_workers):
                 keys.append(int(self.pc.submit(pc_apply_wrapper, func, apply_key, args, kwargs)))
+            if self.global_rank == 0:
+                self.master_wait_for_all_workers(apply_key)
             results = self.collect_results(keys)
             self.pc.take(apply_key)
             sys.stdout.flush()
@@ -222,7 +248,7 @@ class ParallelContextInterface(object):
                     pending_keys.remove(key)
                 if not pending_keys:
                     break
-                time.sleep(0.1)
+                # time.sleep(0.1)
             return {key: self.collected.pop(key) for key in keys if key in self.collected}
 
     def map_sync(self, func, *sequences):
