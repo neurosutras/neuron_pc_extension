@@ -143,18 +143,12 @@ class ParallelContextInterface(object):
         global_count = 0
         iter_count = 0
         while global_count < self.num_workers - 1:
-            # print 'global_rank: %i; inside the master_wait_for_all_workers loop; %i iterations\r' % \
-            #      (self.global_rank, iter_count)
-            # sys.stdout.flush()
             self.pc.take(key)
             count = self.pc.upkscalar()
             global_count = count
             self.pc.post(key, count)
             time.sleep(0.1)
             iter_count += 1
-        # print 'global_rank: %i; exiting master_wait_for_all_workers; %i iterations\r' % \
-        #      (self.global_rank, iter_count - 1)
-        sys.stdout.flush()
         return
 
     def wait_for_all_workers(self, key):
@@ -171,8 +165,6 @@ class ParallelContextInterface(object):
             while global_count < self.num_workers:
                 for this_rank in global_ranks:
                     if self.global_rank == this_rank:
-                        # print 'global_rank: %i; local_rank: %i; inside the wait_for_all_workers loop; %i ' \
-                        #      'iterations\r' % (self.global_rank, self.rank, iter_count)
                         sys.stdout.flush()
                         self.pc.take(key)
                         count = self.pc.upkscalar()
@@ -183,12 +175,6 @@ class ParallelContextInterface(object):
                         self.pc.post(key, count)
                         time.sleep(0.1)
                 iter_count += 1
-            # print 'global_rank: %i; local_rank: %i; exiting wait_for_all_workers; %i iterations\r' % \
-            #      (self.global_rank, self.rank, iter_count - 1)
-            sys.stdout.flush()
-        #else:
-        #    print 'global_rank: %i; local_rank: %i; is just along for the ride\r' % (self.global_rank, self.rank)
-        #    sys.stdout.flush()
         return
 
     def apply_sync(self, func, *args, **kwargs):
@@ -213,7 +199,7 @@ class ParallelContextInterface(object):
             results = self.collect_results(keys)
             self.pc.take(apply_key)
             sys.stdout.flush()
-            return [results[key] for key in keys]
+            return results
         else:
             result = func(*args, **kwargs)
             sys.stdout.flush()
@@ -229,11 +215,12 @@ class ParallelContextInterface(object):
     def collect_results(self, keys=None):
         """
         If no keys are specified, this method is a blocking operation that waits until all previously submitted jobs 
-        have been completed, retrieves all results from the bulletin board, and stores them in the 'collected' dict in 
-        on the master process, indexed by their submission key.
+        have been completed, retrieves all results from the bulletin board, and returns them as a dict indexed by their
+        submission key.
         If a list of keys is provided, collect_results first checks if the results have already been placed in the
-        'collected' dict, and otherwise blocks until all requested results are available. Results retrieved from the
-        bulletin board that were not requested are left in the 'collected' dict.
+        'collected' dict on the master process, and otherwise blocks until all requested results are available. Results
+         are returned as a list in the same order as the submitted keys. Results retrieved from the bulletin board that
+         were not requested are left in the 'collected' dict.
         :param keys: list
         :return: dict
         """
@@ -241,20 +228,21 @@ class ParallelContextInterface(object):
             while self.pc.working():
                 key = int(self.pc.userid())
                 self.collected[key] = self.pc.pyret()
-                # time.sleep(0.1)
             keys = self.collected.keys()
             return {key: self.collected.pop(key) for key in keys}
         else:
-            pending_keys = [key for key in keys if key not in self.collected]
-            while self.pc.working():
+            remaining_keys = [key for key in keys if key not in self.collected]
+            while len(remaining_keys) > 0 and self.pc.working():
                 key = int(self.pc.userid())
                 self.collected[key] = self.pc.pyret()
-                if key in pending_keys:
-                    pending_keys.remove(key)
-                if not pending_keys:
-                    break
-                # time.sleep(0.1)
-            return {key: self.collected.pop(key) for key in keys if key in self.collected}
+                try:
+                    remaining_keys.remove(key)
+                except ValueError:
+                    pass
+            try:
+                return [self.collected.pop(key) for key in keys]
+            except KeyError:
+                raise KeyError('pc_extension: all jobs have completed, but not all requested keys were found')
 
     def map_sync(self, func, *sequences):
         """
@@ -272,7 +260,7 @@ class ParallelContextInterface(object):
             key = int(self.pc.submit(func, *args))
             keys.append(key)
         results = self.collect_results(keys)
-        return [results[key] for key in keys]
+        return results
 
     def map_async(self, func, *sequences):
         """
