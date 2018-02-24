@@ -176,7 +176,7 @@ class ParallelContextInterface(object):
                             incremented = True
                         global_count = count
                         self.pc.post(key, count)
-                        # time.sleep(0.1)
+                        time.sleep(0.1)
                 iter_count += 1
             print 'global_rank: %i; local_rank: %i; exiting wait_for_all_workers; %i iterations\r' % \
                   (self.global_rank, self.rank, iter_count - 1)
