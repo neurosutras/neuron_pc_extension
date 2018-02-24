@@ -50,6 +50,7 @@ class AsyncResultWrapper(object):
         """
         self.interface = interface
         self.keys = keys
+        self.remaining_keys = list(keys)
         self._ready = False
 
     def ready(self):
@@ -57,17 +58,17 @@ class AsyncResultWrapper(object):
 
         :return: bool
         """
-        if self.interface.pc.working():
+        if len(self.remaining_keys) > 0 and self.interface.pc.working():
             key = int(self.interface.pc.userid())
             self.interface.collected[key] = self.interface.pc.pyret()
-        else:
-            self._ready = True
-            return True
-        if all(key in self.interface.collected for key in self.keys):
-            self._ready = True
-            return True
-        else:
+            try:
+                self.remaining_keys.remove(key)
+            except ValueError:
+                pass
             return False
+        else:
+            self._ready = True
+            return True
 
     def get(self):
         """
