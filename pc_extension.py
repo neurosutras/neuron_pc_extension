@@ -182,9 +182,9 @@ class ParallelContextInterface(object):
             # print 'global_rank: %i; local_rank: %i; exiting wait_for_all_workers; %i iterations\r' % \
             #      (self.global_rank, self.rank, iter_count - 1)
             sys.stdout.flush()
-        else:
-            print 'global_rank: %i; local_rank: %i; is just along for the ride\r' % (self.global_rank, self.rank)
-            sys.stdout.flush()
+        #else:
+        #    print 'global_rank: %i; local_rank: %i; is just along for the ride\r' % (self.global_rank, self.rank)
+        #    sys.stdout.flush()
         return
 
     def apply_sync(self, func, *args, **kwargs):
