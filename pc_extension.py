@@ -52,6 +52,7 @@ class AsyncResultWrapper(object):
         self.keys = keys
         self.remaining_keys = list(keys)
         self._ready = False
+        self.start_time = time.time()
 
     def ready(self):
         """
@@ -60,6 +61,7 @@ class AsyncResultWrapper(object):
         """
         if len(self.remaining_keys) > 0 and self.interface.pc.working():
             key = int(self.interface.pc.userid())
+            print 'Took key: %i; elapsed time: %.1f s' % (key, time.time() - self.start_time)
             self.interface.collected[key] = self.interface.pc.pyret()
             try:
                 self.remaining_keys.remove(key)

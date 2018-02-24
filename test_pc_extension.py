@@ -45,8 +45,8 @@ def main(procs_per_worker):
     if context.interface.global_rank == 0:
         print 'before interface start: %i/%i total processes detected\n' % \
               (len(set(result1)), context.interface.global_size)
-    time.sleep(1.)
     sys.stdout.flush()
+    time.sleep(1.)
 
     result2 = context.interface.apply(init_worker)
     time.sleep(1.)
