@@ -52,25 +52,27 @@ class AsyncResultWrapper(object):
         self.keys = keys
         self.remaining_keys = list(keys)
         self._ready = False
-        self.start_time = time.time()
 
-    def ready(self):
+    def ready(self, wait=None):
         """
-
+        :param wait: int or float
         :return: bool
         """
-        if len(self.remaining_keys) > 0 and self.interface.pc.working():
+        time_stamp = time.time()
+        if wait is None:
+            wait = 0
+        while len(self.remaining_keys) > 0 and self.interface.pc.working():
             key = int(self.interface.pc.userid())
-            print 'Took key: %i; elapsed time: %.1f s' % (key, time.time() - self.start_time)
+            # print 'Took key: %i; elapsed time: %.1f s' % (key, time.time() - self.start_time)
             self.interface.collected[key] = self.interface.pc.pyret()
             try:
                 self.remaining_keys.remove(key)
             except ValueError:
                 pass
-            return False
-        else:
-            self._ready = True
-            return True
+            if time.time() - time_stamp > wait:
+                return False
+        self._ready = True
+        return True
 
     def get(self):
         """
