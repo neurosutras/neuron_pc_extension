@@ -22,6 +22,8 @@ id_world==0 does NOT execute context_callable(context)
 '''
 from mpi4py import MPI
 from neuron import h
+import sys
+
 
 pc = h.ParallelContext()
 
@@ -29,6 +31,9 @@ pc = h.ParallelContext()
 def _context(context, arg):
     if (int(pc.id_world()) > 0):
         context(arg)
+    else:
+        print ("master entered _context")
+        sys.stdout.flush()
     if (int(pc.id()) == 0):  # increment context count
         pc.master_works_on_jobs(0)
         pc.take("context")
@@ -62,15 +67,16 @@ if __name__ == "__main__":
 
 
     def f(arg):
-        print ("arg=%d nhost_world=%d id_world=%d nhost_bbs=%d id_bbs=%d nhost=%d id=%d" %
+        print ("arg=%d nhost_world=%d id_world=%d nhost_bbs=%d id_bbs=%d nhost=%d id=%d\r" %
                (arg, nhost_world, id_world, nhost_bbs, id_bbs, nhost, id))
 
 
     f(1)
+    sys.stdout.flush()
     time.sleep(1.)  # enough time to print
 
     pc.runworker()
-    print ("after runworker")
+    print ("after runworker\r")
     pccontext(f, 2)
     f(3)  # rank 0 of the master subworld
 
