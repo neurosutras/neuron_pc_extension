@@ -30,9 +30,9 @@ def _context(context, arg):
     if (int(pc.id_world()) > 0):
         context(arg)
     if (int(pc.id()) == 0):  # increment context count
-        # pc.master_works_on_jobs(0)
+        pc.master_works_on_jobs(0)
         pc.take("context")
-        # pc.master_works_on_jobs(1)
+        pc.master_works_on_jobs(1)
         i = pc.upkscalar()
         pc.post("context", i + 1)
         while True:
@@ -67,7 +67,7 @@ if __name__ == "__main__":
 
 
     f(1)
-    time.sleep(.1)  # enough time to print
+    time.sleep(1.)  # enough time to print
 
     pc.runworker()
     print ("after runworker")
