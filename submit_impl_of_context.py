@@ -32,7 +32,7 @@ def _context(context, arg):
     if (int(pc.id_world()) > 0):
         context(arg)
     else:
-        print ("master entered _context")
+        print ("master entered _context\r")
         sys.stdout.flush()
     if (int(pc.id()) == 0):  # increment context count
         pc.master_works_on_jobs(0)
@@ -77,7 +77,13 @@ if __name__ == "__main__":
 
     pc.runworker()
     print ("after runworker\r")
+    sys.stdout.flush()
+    time.sleep(1.)  # enough time to print
+
     pccontext(f, 2)
+    sys.stdout.flush()
+    time.sleep(1.)  # enough time to print
+
     f(3)  # rank 0 of the master subworld
 
     for i in range(1):  # time to print and
