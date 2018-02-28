@@ -52,6 +52,7 @@ def _context(context, arg):
                 break
     if int(pc.id_world()) == 0:
         print ("master exiting _context\r")
+        pc.master_works_on_jobs(1)
         sys.stdout.flush()
     return  # nhost_bbs distinct ranks executed _context
 
