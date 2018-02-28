@@ -33,9 +33,9 @@ def _context(context, arg):
         context(arg)
     else:
         print ("master entered _context\r")
+        pc.master_works_on_jobs(0)
         sys.stdout.flush()
     if (int(pc.id()) == 0):  # increment context count
-        pc.master_works_on_jobs(0)
         pc.take("context")
         pc.master_works_on_jobs(1)
         i = pc.upkscalar()
@@ -45,8 +45,15 @@ def _context(context, arg):
             i = pc.upkscalar()
             pc.post("context", i)
             time.sleep(0.1)
+            if int(pc.id_world()) == 0:
+                print ("master sees context count: %i\r" % i)
+                sys.stdout.flush()
             if i == nhost_bbs:
-                return  # nhost_bbs distinct ranks executed _context
+                break
+    if int(pc.id_world()) == 0:
+        print ("master exiting _context\r")
+        sys.stdout.flush()
+    return  # nhost_bbs distinct ranks executed _context
 
 
 def pccontext(context, arg):  # working version of pc.context(context, arg)
@@ -89,6 +96,8 @@ if __name__ == "__main__":
     time.sleep(1.)  # enough time to print
 
     f(3)  # rank 0 of the master subworld
+    sys.stdout.flush()
+    time.sleep(1.)  # enough time to print
 
     for i in range(1):  # time to print and
         pc.post("wait")  # bulletin board to communicate
