@@ -41,7 +41,11 @@ def _context(context, arg):
         i = pc.upkscalar()
         pc.post("context", i + 1)
         while True:
-            if pc.look("context") and pc.upkscalar() == nhost_bbs:
+            pc.take("context")
+            i = pc.upkscalar()
+            pc.post("context", i)
+            time.sleep(0.1)
+            if i == nhost_bbs:
                 return  # nhost_bbs distinct ranks executed _context
 
 
