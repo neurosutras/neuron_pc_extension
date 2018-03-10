@@ -5,14 +5,9 @@ from submit_impl_of_context import pccontext
 def context(arg):
   ...
 
-# for any pc.subworld organization
-#after pc.runworker()
-#execute context(arg) on all nhost_world ranks except 0
+for any pc.subworld organization, after pc.runworker(), execute context(arg) on all nhost_world ranks except 0
 pccontext(context, arg)
 
-'''
-
-'''
 Implementation of what pc.context should be via use of pc.submit. The problem
 with pc.context is that it does not execute on any worker of subworld 0.
 by submitting pc.nhost_bbs jobs with a context_callable, context pair
@@ -33,23 +28,22 @@ def _context(context, arg):
         context(arg)
     else:
         print ("master entered _context\r")
-        pc.master_works_on_jobs(0)
         sys.stdout.flush()
     if (int(pc.id()) == 0):  # increment context count
+        pc.master_works_on_jobs(0)
         pc.take("context")
         pc.master_works_on_jobs(1)
         i = pc.upkscalar()
         pc.post("context", i + 1)
         while True:
-            pc.take("context")
-            i = pc.upkscalar()
-            pc.post("context", i)
+            if pc.look("context"):
+                i = pc.upkscalar()
+                if int(pc.id_world()) == 0:
+                    print ("master sees context count: %i\r" % i)
+                    sys.stdout.flush()
+                if i == nhost_bbs:
+                    break
             time.sleep(0.1)
-            if int(pc.id_world()) == 0:
-                print ("master sees context count: %i\r" % i)
-                sys.stdout.flush()
-            if i == nhost_bbs:
-                break
     if int(pc.id_world()) == 0:
         print ("master exiting _context\r")
         pc.master_works_on_jobs(1)
