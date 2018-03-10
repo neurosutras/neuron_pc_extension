@@ -1,4 +1,4 @@
-'''
+"""
 Usage:
 from submit_impl_of_context import pccontext
 
@@ -14,7 +14,7 @@ by submitting pc.nhost_bbs jobs with a context_callable, context pair
 of args and arranging them to execute one per pc.id_bbs
 we can get the effect of what pc.context should be. Note that
 id_world==0 does NOT execute context_callable(context)
-'''
+"""
 from mpi4py import MPI
 from neuron import h
 import sys

@@ -131,25 +131,6 @@ class ParallelContextInterface(object):
                self.num_workers)
         time.sleep(0.1)
 
-    def master_wait_for_all_workers(self, key):
-        """
-        Prevents the master from taking a job, or even checking for job results, until all workers have completed the
-        operation associated with the specified key.
-        :param key: int or str
-        """
-        if self.global_rank != 0:
-            raise ValueError('pc_extension: global_rank: %i; should not have entered master_wait_for_all_workers' %
-                             self.global_rank)
-        global_count = 0
-        iter_count = 0
-        while global_count < self.num_workers - 1:
-            if self.pc.look(key):
-                count = self.pc.upkscalar()
-                global_count = count
-            time.sleep(0.1)
-            iter_count += 1
-        return
-
     def wait_for_all_workers(self, key):
         """
         Prevents any worker from returning until all workers have completed the operation associated with the specified
@@ -157,10 +138,9 @@ class ParallelContextInterface(object):
         :param key: int or str
         """
         iter_count = 0
+        self.pc.master_works_on_jobs(0)
         if self.rank == 0:
-            self.pc.master_works_on_jobs(0)
             self.pc.take(key)
-            self.pc.master_works_on_jobs(1)
             count = self.pc.upkscalar()
             count += 1
             self.pc.post(key, count)
@@ -169,6 +149,7 @@ class ParallelContextInterface(object):
                     count = self.pc.upkscalar()
                 time.sleep(0.1)
                 iter_count += 1
+        self.pc.master_works_on_jobs(1)
         return
 
     def apply_sync(self, func, *args, **kwargs):
@@ -188,8 +169,6 @@ class ParallelContextInterface(object):
             keys = []
             for i in xrange(self.num_workers):
                 keys.append(int(self.pc.submit(pc_apply_wrapper, func, apply_key, args, kwargs)))
-            # if self.global_rank == 0:
-            #    self.master_wait_for_all_workers(apply_key)
             results = self.collect_results(keys)
             self.pc.take(apply_key)
             sys.stdout.flush()
