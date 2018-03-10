@@ -29,10 +29,11 @@ def _context(context, arg):
     else:
         print ("master entered _context\r")
         sys.stdout.flush()
+    pc.master_works_on_jobs(0)
     if (int(pc.id()) == 0):  # increment context count
-        pc.master_works_on_jobs(0)
+        # pc.master_works_on_jobs(0)
         pc.take("context")
-        pc.master_works_on_jobs(1)
+        # pc.master_works_on_jobs(1)
         i = pc.upkscalar()
         pc.post("context", i + 1)
         while True:
@@ -44,9 +45,9 @@ def _context(context, arg):
                 if i == nhost_bbs:
                     break
             time.sleep(0.1)
+    pc.master_works_on_jobs(1)
     if int(pc.id_world()) == 0:
         print ("master exiting _context\r")
-        pc.master_works_on_jobs(1)
         sys.stdout.flush()
     return  # nhost_bbs distinct ranks executed _context
 
