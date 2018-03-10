@@ -63,7 +63,6 @@ class AsyncResultWrapper(object):
             wait = 0
         while len(self.remaining_keys) > 0 and self.interface.pc.working():
             key = int(self.interface.pc.userid())
-            # print 'Took key: %i; elapsed time: %.1f s' % (key, time.time() - self.start_time)
             self.interface.collected[key] = self.interface.pc.pyret()
             try:
                 self.remaining_keys.remove(key)
@@ -129,6 +128,7 @@ class ParallelContextInterface(object):
         print 'pc_extension: process id: %i; global rank: %i / %i; local rank: %i / %i; worker id: %i / %i' % \
               (os.getpid(), self.global_rank, self.global_size, self.comm.rank, self.comm.size, self.worker_id,
                self.num_workers)
+        sys.stdout.flush()
         time.sleep(0.1)
 
     def wait_for_all_workers(self, key):

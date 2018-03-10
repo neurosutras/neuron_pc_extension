@@ -29,6 +29,8 @@ def init_worker():
     :return:
     """
     context.interface.start(disp=True)
+    sys.stdout.flush()
+    time.sleep(1.)
     context.interface.ensure_controller()
     return context.interface.global_rank
 
