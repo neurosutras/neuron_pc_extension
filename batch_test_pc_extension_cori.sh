@@ -1,13 +1,13 @@
 #!/bin/bash -l
 
-#SBATCH -J test_pc_extension_20180221
-#SBATCH -o test_pc_extension_20180221.%j.o
-#SBATCH -e test_pc_extension_20180221.%j.e
+#SBATCH -J test_pc_extension_20180309
+#SBATCH -o test_pc_extension_20180309.%j.o
+#SBATCH -e test_pc_extension_20180309.%j.e
 #SBATCH -q debug
 #SBATCH -N 8
 #SBATCH -L SCRATCH
 #SBATCH -C haswell
-#SBATCH -t 0:30:00
+#SBATCH -t 0:10:00
 
 set -x
 
