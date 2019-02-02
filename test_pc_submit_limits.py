@@ -6,7 +6,7 @@ try:
     from mpi4py import MPI
     from neuron import h
 except ImportError:
-    raise ImportError('pc_extension: problem with importing neuron')
+    raise ImportError('test_pc_submit_limits: problem with importing neuron')
 
 
 class Context(object):
@@ -40,9 +40,8 @@ def test(val):
 
 def pc_map(pc, func, *sequences):
     """
-    ParallelContext lacks a native method to apply a function to sequences of arguments, using all available
-    processes, and returning the results in the same order as the specified sequence. This method implements a
-    synchronous (blocking) map operation. Returns results as a list in the same order as the specified sequences.
+    This method uses the NEURON ParallelContext bulletin board to implements a map operation. Returns results as a list
+    in the same order as the specified sequences.
     :param pc: :class:'h.ParallelContext'
     :param func: callable
     :param sequences: list
@@ -75,7 +74,7 @@ def pc_map(pc, func, *sequences):
 @click.option("--task-limit", type=int, default=100)
 def main(block_size, task_limit):
     """
-    Execute blocks of tasks using pc.submit until a task limit.
+    Executes blocks of tasks using pc.submit until a task limit.
     :param block_size: int
     :param task_limit: int
     """
