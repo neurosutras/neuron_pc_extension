@@ -71,16 +71,18 @@ def pc_map(pc, func, *sequences):
 
 @click.command()
 @click.option("--block-size", type=int, default=None)
-@click.option("--task-limit", type=int, default=100)
-def main(block_size, task_limit):
+@click.option("--task-limit", type=int, default=3000000)
+@click.option("--procs-per-worker", type=int, default=1)
+def main(block_size, task_limit, procs_per_worker):
     """
     Executes blocks of tasks using pc.submit until a task limit.
     :param block_size: int
     :param task_limit: int
+    :param procs_per_worker: int
     """
 
     pc = h.ParallelContext()
-    pc.subworlds(1)
+    pc.subworlds(procs_per_worker)
     global_rank = int(pc.id_world())
     global_size = int(pc.nhost_world())
     rank = int(pc.id())
