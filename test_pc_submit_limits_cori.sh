@@ -1,8 +1,8 @@
 #!/bin/bash -l
 
 #SBATCH -J test_pc_submit_limits_20190202
-#SBATCH -o test_pc_submit_limits_20190202.%j.o
-#SBATCH -e test_pc_submit_limits_20190202.%j.e
+#SBATCH -o logs/test_pc_submit_limits_20190202.%j.o
+#SBATCH -e logs/test_pc_submit_limits_20190202.%j.e
 #SBATCH -q debug
 #SBATCH -N 1
 #SBATCH -L SCRATCH
