@@ -15,8 +15,8 @@ def test(first, second, third=None):
     """
     if 'count' not in context():
         context.count = 0
-    # if context.interface.global_rank == 0:
-    #    print 'master process executing test with count: %i' % context.count
+    if context.interface.global_rank == 0:
+        print 'master process executing test with count: %i' % context.count
     context.update(locals())
     context.count += 1
     time.sleep(0.2)
