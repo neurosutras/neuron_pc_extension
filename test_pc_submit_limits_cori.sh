@@ -13,4 +13,4 @@ set -x
 
 cd $HOME/neuron_pc_extension
 
-srun -N 1 -n 32 -c 2 --cpu_bind=cores python test_pc_submit_limit.py --block-size=10000 --task-limit=300000
+srun -N 1 -n 32 -c 2 --cpu_bind=cores python test_pc_submit_limits.py --block-size=10000 --task-limit=300000
