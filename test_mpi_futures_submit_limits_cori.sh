@@ -11,4 +11,5 @@
 
 set -x
 
-srun -N 1 -n 32 -c 2 --cpu_bind=cores python test_mpi_futures_submit_limits.py --block-size=10000 --task-limit=3000000
+srun -N 1 -n 32 -c 2 --cpu_bind=cores python -m mpi4py.futures test_mpi_futures_submit_limits.py --block-size=10000 \
+    --task-limit=3000000

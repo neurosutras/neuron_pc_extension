@@ -6,7 +6,7 @@ try:
     from mpi4py import MPI
     from mpi4py.futures import MPIPoolExecutor
 except ImportError:
-    raise ImportError('test_mpi_futures_submit_limits: problem with from mpi4py.futures')
+    raise ImportError('test_mpi_futures_submit_limits: problem with importing from mpi4py.futures')
 
 
 class Context(object):
@@ -91,7 +91,6 @@ def main(block_size, task_limit):
         time.sleep(0.1)
 
     context.executor.shutdown()
-
 
 
 if __name__ == '__main__':
