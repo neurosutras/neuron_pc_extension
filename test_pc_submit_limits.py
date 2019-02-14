@@ -4,9 +4,13 @@ import time
 import click
 try:
     from mpi4py import MPI
+except:
+    pass
+try:
     from neuron import h
 except ImportError:
     raise ImportError('test_pc_submit_limits: problem with importing neuron')
+# h.nrnmpi_init()
 
 
 class Context(object):
@@ -69,7 +73,7 @@ def pc_map(pc, func, *sequences):
         raise KeyError('pc_map: all jobs have completed, but not all requested keys were found')
 
 
-@click.command()
+@click.command(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
 @click.option("--block-size", type=int, default=None)
 @click.option("--task-limit", type=int, default=3000000)
 @click.option("--procs-per-worker", type=int, default=1)
