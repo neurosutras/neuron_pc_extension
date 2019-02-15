@@ -57,9 +57,9 @@ def pc_map(pc, func, *sequences):
     results_dict = dict()
 
     for args in zip(*sequences):
-        key = context.task_counter
+        # key = context.task_counter
         context.task_counter += 1
-        pc.submit(key, func, *args)
+        key = pc.submit(func, *args)
         keys.append(key)
 
     remaining_keys = list(keys)
