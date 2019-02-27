@@ -10,8 +10,10 @@ import os
 import time
 import pprint
 try:
-    from mpi4py import MPI
     from neuron import h
+    h.nrnmpi_init()
+    from mpi4py import MPI
+
 except ImportError:
     raise ImportError('pc_extension: problem with importing neuron')
 
