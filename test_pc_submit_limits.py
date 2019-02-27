@@ -5,12 +5,15 @@ import click
 try:
     from mpi4py import MPI
 except:
-    pass
+    raise ImportError('test_pc_submit_limits: problem with importing from mpi4py')
 try:
     from neuron import h
 except ImportError:
     raise ImportError('test_pc_submit_limits: problem with importing neuron')
-# h.nrnmpi_init()
+try:
+    h.nrnmpi_init()
+except:
+    raise RuntimeError('test_pc_submit_limits: problem initializing nrnmpi')
 
 
 class Context(object):
@@ -114,6 +117,7 @@ def main(block_size, task_limit, procs_per_worker):
         time.sleep(0.1)
 
     pc.done()
+    h.quit()
 
 
 if __name__ == '__main__':
