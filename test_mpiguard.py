@@ -17,20 +17,17 @@ def main(import_mpi4py, h_quit, procs_per_worker):
     """
     if import_mpi4py == 1:
         order = 'before'
-    elif import_mpi4py == 2:
-        order = 'after'
-
-    if import_mpi4py == 1:
         from mpi4py import MPI
+
     from neuron import h
     h.nrnmpi_init()
+
     if import_mpi4py == 2:
+        order = 'after'
         from mpi4py import MPI
+
     if import_mpi4py > 0:
         comm = MPI.COMM_WORLD
-
-    sys.stdout.flush()
-    time.sleep(1.)
 
     pc = h.ParallelContext()
     pc.subworlds(procs_per_worker)
