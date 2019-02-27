@@ -4,41 +4,6 @@ import time
 import click
 
 
-def test(val):
-    return val
-
-
-def pc_map(pc, func, *sequences):
-    """
-    This method uses the NEURON ParallelContext bulletin board to implements a map operation. Returns results as a list
-    in the same order as the specified sequences.
-    :param pc: :class:'h.ParallelContext'
-    :param func: callable
-    :param sequences: list
-    :return: list
-    """
-    if not sequences:
-        return None
-    keys = []
-    results_dict = dict()
-
-    for args in zip(*sequences):
-        # key = context.task_counter
-        context.task_counter += 1
-        key = pc.submit(func, *args)
-        keys.append(key)
-
-    remaining_keys = list(keys)
-    while len(remaining_keys) > 0 and pc.working():
-        key = int(pc.userid())
-        results_dict[key] = pc.pyret()
-        remaining_keys.remove(key)
-    try:
-        return [results_dict.pop(key) for key in keys]
-    except KeyError:
-        raise KeyError('pc_map: all jobs have completed, but not all requested keys were found')
-
-
 @click.command(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
 @click.option('--import-mpi4py', type=int, default=0)
 @click.option('--h-quit', is_flag=True)
@@ -63,9 +28,7 @@ def main(import_mpi4py, h_quit, procs_per_worker):
         from mpi4py import MPI
     if import_mpi4py > 0:
         comm = MPI.COMM_WORLD
-        print('test_mpiguard: mpi4py imported %s neuron; got past imports' % order)
-    else:
-        print('test_mpiguard: mpi4py not imported; got past imports')
+
     sys.stdout.flush()
     time.sleep(1.)
 
