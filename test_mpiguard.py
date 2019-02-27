@@ -8,13 +8,15 @@ import click
 @click.option('--import-mpi4py', type=int, default=0)
 @click.option('--h-quit', is_flag=True)
 @click.option('--procs-per-worker', type=int, default=1)
-def main(import_mpi4py, h_quit, procs_per_worker):
+@click.option('--sleep', type=float, default=0.)
+def main(import_mpi4py, h_quit, procs_per_worker, sleep):
     """
 
     :param import_mpi4py: int
     :param h_quit: bool
     :param procs_per_worker: int
     """
+    time.sleep(sleep)
     if import_mpi4py == 1:
         order = 'before'
         from mpi4py import MPI
