@@ -70,9 +70,9 @@ void nrnmpi_init(int nrnmpi_under_nrncontrol, int* pargc, char*** pargv) {
 	if( nrnmpi_under_nrncontrol_ ) {
 #if 0
 {int i;
-fprintf("nrnmpi_init: argc=%d\n", *pargc);
+printf("nrnmpi_init: argc=%d\n", *pargc);
 for (i=0; i < *pargc; ++i) {
-	fprintf("%d |%s|\n", i, (*pargv)[i]);
+	printf("%d |%s|\n", i, (*pargv)[i]);
 }
 }
 #endif
@@ -154,15 +154,15 @@ for (i=0; i < *pargc; ++i) {
 #endif
 #if 0
 {int i;
-fprintf("nrnmpi_init: argc=%d\n", *pargc);
+printf("nrnmpi_init: argc=%d\n", *pargc);
 for (i=0; i < *pargc; ++i) {
-	fprintf("%d |%s|\n", i, (*pargv)[i]);
+	printf("%d |%s|\n", i, (*pargv)[i]);
 }
 }
 #endif
 #if 1
 	if (nrnmpi_myid == 0) {
-		fprintf("numprocs=%d\n", nrnmpi_numprocs_world);
+		printf("numprocs=%d\n", nrnmpi_numprocs_world);
 	}
 #endif
 
@@ -185,7 +185,7 @@ void nrnmpi_terminate() {
 #if NRNMPI
 	if (nrnmpi_use) {
 #if 0
-		fprintf("%d nrnmpi_terminate\n", nrnmpi_myid_world);
+		printf("%d nrnmpi_terminate\n", nrnmpi_myid_world);
 #endif
 #if USE_HPM
 		hpmTerminate( nrnmpi_myid_world );

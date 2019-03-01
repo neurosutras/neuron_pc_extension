@@ -104,7 +104,7 @@ void inithoc() {
 
   int argc = argc_nompi;
   char** argv = (char**)argv_nompi;
-  fprintf("enter inithoc\n");
+  printf("enter inithoc\n");
 #if USE_PTHREAD
   main_thread_ = pthread_self();
 #endif
@@ -131,9 +131,9 @@ void inithoc() {
 
   // avoid having to include the c++ version of mpi.h
   if (!pmes) {
-fprintf("enter nrnmpi_wrap_mpi_init\n");
+printf("enter nrnmpi_wrap_mpi_init\n");
     nrnmpi_wrap_mpi_init(&flag);
-fprintf("leave nrnmpi_wrap_mpi_init %d\n", flag);
+printf("leave nrnmpi_wrap_mpi_init %d\n", flag);
   }
   // MPI_Initialized(&flag);
 
@@ -146,7 +146,7 @@ fprintf("leave nrnmpi_wrap_mpi_init %d\n", flag);
     // force NEURON to initialize MPI
     mpi_mes = 2;
     if (pmes) {
-      fprintf(
+      printf(
           "NEURON_INIT_MPI exists in env but NEURON cannot initialize MPI "
           "because:\n%s\n",
           pmes);
@@ -173,14 +173,14 @@ fprintf("leave nrnmpi_wrap_mpi_init %d\n", flag);
     strcpy(argv[argc - 1], buf);
   }
 #endif // !defined(__CYGWIN__)
-fprintf("here 1\n");
+printf("here 1\n");
   nrn_is_python_extension = 1;
   nrn_nobanner_ = 1;
   const char* pyver = Py_GetVersion();
   nrn_is_python_extension = (pyver[0]-'0')*10 + (pyver[2] - '0');
   p_nrnpython_finalize = nrnpython_finalize;
 #if NRNMPI
-fprintf("here 2\n");
+printf("here 2\n");
   nrnmpi_init(1, &argc, &argv);  // may change argc and argv
 #if 0 && !defined(NRNMPI_DYNAMICLOAD)
 	if (nrnmpi_myid == 0) {
@@ -188,13 +188,13 @@ fprintf("here 2\n");
 			case 0:
 				break;
 			case 1:
-  fprintf("MPI_Initialized==true, MPI functionality enabled by Python.\n");
+  printf("MPI_Initialized==true, MPI functionality enabled by Python.\n");
 				break;
 			case 2:
-  fprintf("MPI functionality enabled by NEURON.\n");
+  printf("MPI functionality enabled by NEURON.\n");
 				break;
 			case 3:
-  fprintf("MPI_Initialized==false, MPI functionality not enabled.\n");
+  printf("MPI_Initialized==false, MPI functionality not enabled.\n");
 				break;
 		}
 	}
@@ -203,20 +203,20 @@ fprintf("here 2\n");
     free(pmes);
   }
 #endif // NRNMPI
-fprintf("here 3\n");
+printf("here 3\n");
   nrn_main_launch = 2;
   ivocmain(argc, argv, env);
 //	nrnpy_augment_path();
 #if NRNPYTHON_DYNAMICLOAD
   nrnpy_site_problem = 0;
 #endif // NRNPYTHON_DYNAMICLOAD
-fprintf("here 4\n");
+printf("here 4\n");
 #if PY_MAJOR_VERSION >= 3
   return nrnpy_hoc();
 #else // ! PY_MAJOR_VERSION >= 3
   nrnpy_hoc();
 #endif // ! PY_MAJOR_VERSION >= 3
-fprintf("leave hocinit\n");
+printf("leave hocinit\n");
 }
 
 #if !defined(CYGWIN)
