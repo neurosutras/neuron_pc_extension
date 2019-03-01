@@ -20,9 +20,24 @@ def main(import_mpi4py, h_quit, procs_per_worker, sleep):
     if import_mpi4py == 1:
         order = 'before'
         from mpi4py import MPI
+        print('test_mpiguard: getting past import mpi4py')
+        sys.stdout.flush()
+        time.sleep(1.)
 
     from neuron import h
-    h.nrnmpi_init()
+    print('test_mpiguard: getting past from neuron import h')
+    sys.stdout.flush()
+    time.sleep(1.)
+
+    try:
+        h.nrnmpi_init()
+        print('test_mpiguard: getting past h.nrnmpi_init()')
+        sys.stdout.flush()
+        time.sleep(1.)
+    except:
+        print('test_mpiguard: problem calling h.nrnmpi_init(); may not be defined for this version of neuron')
+        sys.stdout.flush()
+        time.sleep(1.)
 
     if import_mpi4py == 2:
         order = 'after'
@@ -57,6 +72,8 @@ def main(import_mpi4py, h_quit, procs_per_worker, sleep):
     # catch workers escaping from runworker loop
     if global_rank != 0:
         print('test_mpiguard: global_rank: %i escaped from the pc.runworker loop')
+        sys.stdout.flush()
+        time.sleep(1.)
         os._exit(1)
 
     pc.done()
