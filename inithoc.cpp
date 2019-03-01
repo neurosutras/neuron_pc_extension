@@ -163,8 +163,8 @@ fprintf("leave nrnmpi_wrap_mpi_init %d\n", flag);
 #endif //NRNMPI
 
 #if !defined(__CYGWIN__)
-  sfprintf(buf, "%s/.libs/libnrnmech.so", NRNHOSTCPU);
-  // fprintf("buf = |%s|\n", buf);
+  sprintf(buf, "%s/.libs/libnrnmech.so", NRNHOSTCPU);
+  // printf("buf = |%s|\n", buf);
   FILE* f;
   if ((f = fopen(buf, "r")) != 0) {
     fclose(f);
