@@ -14,7 +14,7 @@ from neuron import h
 try:
     h.nrnmpi_init()
 except:
-    print('pc_extension: h.nrnmpi_init() not executed; may not be included in this version of NEURON')
+    print('pc_extension: h.nrnmpi_init() not executed; may not be defined in this version of NEURON')
 
 
 class Context(object):

@@ -10,11 +10,11 @@ import click
 @click.option('--h-quit', is_flag=True)
 @click.option('--procs-per-worker', type=int, default=1)
 @click.option('--sleep', type=float, default=0.)
-def main(import_mpi4py, run_nrn_mpi_init, h_quit, procs_per_worker, sleep):
+def main(import_mpi4py, run_nrnmpi_init, h_quit, procs_per_worker, sleep):
     """
 
     :param import_mpi4py: int
-    :param run_nrn_mpi_init: bool
+    :param run_nrnmpi_init: bool
     :param h_quit: bool
     :param procs_per_worker: int
     :param sleep: float
@@ -32,14 +32,14 @@ def main(import_mpi4py, run_nrn_mpi_init, h_quit, procs_per_worker, sleep):
     sys.stdout.flush()
     time.sleep(1.)
 
-    if run_nrn_mpi_init:
+    if run_nrnmpi_init:
         try:
             h.nrnmpi_init()
             print('test_mpiguard: getting past h.nrnmpi_init()')
             sys.stdout.flush()
             time.sleep(1.)
         except:
-            print('test_mpiguard: problem calling h.nrnmpi_init(); may not be defined for this version of neuron')
+            print('test_mpiguard: problem calling h.nrnmpi_init(); may not be defined in this version of NEURON')
             sys.stdout.flush()
             time.sleep(1.)
     else:
