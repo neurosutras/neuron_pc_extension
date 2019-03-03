@@ -9,13 +9,12 @@ import sys
 import os
 import time
 import pprint
+from mpi4py import MPI
+from neuron import h
 try:
-    from neuron import h
     h.nrnmpi_init()
-    from mpi4py import MPI
-
-except ImportError:
-    raise ImportError('pc_extension: problem with importing neuron')
+except:
+    print('pc_extension: h.nrnmpi_init() not executed; may not be included in this version of NEURON')
 
 
 class Context(object):

@@ -6,15 +6,18 @@ import click
 
 @click.command(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
 @click.option('--import-mpi4py', type=int, default=0)
+@click.option('--run-nrnmpi-init', type=bool, default=True)
 @click.option('--h-quit', is_flag=True)
 @click.option('--procs-per-worker', type=int, default=1)
 @click.option('--sleep', type=float, default=0.)
-def main(import_mpi4py, h_quit, procs_per_worker, sleep):
+def main(import_mpi4py, run_nrn_mpi_init, h_quit, procs_per_worker, sleep):
     """
 
     :param import_mpi4py: int
+    :param run_nrn_mpi_init: bool
     :param h_quit: bool
     :param procs_per_worker: int
+    :param sleep: float
     """
     time.sleep(sleep)
     if import_mpi4py == 1:
@@ -29,19 +32,26 @@ def main(import_mpi4py, h_quit, procs_per_worker, sleep):
     sys.stdout.flush()
     time.sleep(1.)
 
-    try:
-        h.nrnmpi_init()
-        print('test_mpiguard: getting past h.nrnmpi_init()')
+    if run_nrn_mpi_init:
+        try:
+            h.nrnmpi_init()
+            print('test_mpiguard: getting past h.nrnmpi_init()')
+            sys.stdout.flush()
+            time.sleep(1.)
+        except:
+            print('test_mpiguard: problem calling h.nrnmpi_init(); may not be defined for this version of neuron')
+            sys.stdout.flush()
+            time.sleep(1.)
+    else:
+        print('test_mpiguard: h.nrnmpi_init() not executed')
         sys.stdout.flush()
         time.sleep(1.)
-    except:
-        print('test_mpiguard: problem calling h.nrnmpi_init(); may not be defined for this version of neuron')
-        sys.stdout.flush()
-        time.sleep(1.)
-
     if import_mpi4py == 2:
         order = 'after'
         from mpi4py import MPI
+        print('test_mpiguard: getting past import mpi4py')
+        sys.stdout.flush()
+        time.sleep(1.)
 
     if import_mpi4py > 0:
         comm = MPI.COMM_WORLD
