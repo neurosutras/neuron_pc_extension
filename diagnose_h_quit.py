@@ -47,7 +47,9 @@ sys.stdout.flush()
 time.sleep(1.)
 # os._exit(1)
 
-print MPI.Is_finalized()
+print('diagnoise_h_quit: MPI.Is_finalized(): %s' % str(MPI.Is_finalized()))
+sys.stdout.flush()
+time.sleep(1.)
 
 print('diagnoise_h_quit: calling h_quit()')
 sys.stdout.flush()
