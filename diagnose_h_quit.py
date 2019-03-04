@@ -42,15 +42,17 @@ if global_rank != 0:
     os._exit(1)
 
 pc.done()
-print('Got past pc.done()')
+print('diagnoise_h_quit: got past pc.done()')
 sys.stdout.flush()
 time.sleep(1.)
-os._exit(1)
+# os._exit(1)
 
-print('calling h_quit()')
+print MPI.Is_finalized()
+
+print('diagnoise_h_quit: calling h_quit()')
 sys.stdout.flush()
 time.sleep(1.)
 h.quit()
-print('Got past h_quit()')
+print('diagnoise_h_quit: got past h_quit()')
 sys.stdout.flush()
 time.sleep(1.)
