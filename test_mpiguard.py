@@ -9,7 +9,7 @@ import click
 @click.option('--run-nrnmpi-init', type=bool, default=True)
 @click.option('--procs-per-worker', type=int, default=1)
 @click.option('--sleep', type=float, default=0.)
-def main(import_mpi4py, run_nrnmpi_init, h_quit, procs_per_worker, sleep):
+def main(import_mpi4py, run_nrnmpi_init, procs_per_worker, sleep):
     """
 
     :param import_mpi4py: int
