@@ -195,10 +195,8 @@ fflush(stderr);
 	int msgtag = nrnmpi_bbssendrecv(sid_, type, request_, recvbuf_);
 	errno = 0;
 	wait_time_ += time() - ts;
-#if debug
-printf("%d BBSClient::get return msgtag=%d\n", nrnmpi_myid_bbs, msgtag);
-fflush(stdout);
-#endif
+	printf("%d BBSClient::get return msgtag=%d\n", nrnmpi_myid_bbs, msgtag);
+	fflush(stdout);
 	if (msgtag == QUIT) {
 		done();
 	}
@@ -311,8 +309,14 @@ fflush(stdout);
 #if defined(USE_PYTHON)
 	if (p_nrnpython_start) { (*p_nrnpython_start)(0);}
 #endif
+	printf("Before done(): %d\n", nrnmpi_myid);
+	fflush(stdout);	
 	BBSImpl::done();
+	printf("After done(): %d\n", nrnmpi_myid);
+	fflush(stdout);
 	nrnmpi_terminate();
+	printf("After nrnmpi_terminate(): %d\n", nrnmpi_myid);
+	fflush(stdout);
 	exit(0);
 }
 

@@ -22,11 +22,13 @@ def main(import_mpi4py, run_nrnmpi_init, procs_per_worker, sleep):
     if import_mpi4py == 1:
         order = 'before'
         from mpi4py import MPI
+        time.sleep(1.)
         print('test_mpiguard: getting past import mpi4py')
         sys.stdout.flush()
         time.sleep(1.)
 
     from neuron import h
+    time.sleep(1.)
     print('test_mpiguard: getting past from neuron import h')
     sys.stdout.flush()
     time.sleep(1.)
@@ -34,21 +36,25 @@ def main(import_mpi4py, run_nrnmpi_init, procs_per_worker, sleep):
     if run_nrnmpi_init:
         try:
             h.nrnmpi_init()
+            time.sleep(1.)
             print('test_mpiguard: getting past h.nrnmpi_init()')
             sys.stdout.flush()
             time.sleep(1.)
         except:
             print('test_mpiguard: problem calling h.nrnmpi_init(); may not be defined in this version of NEURON')
+            time.sleep(1.)
             sys.stdout.flush()
             time.sleep(1.)
     else:
         print('test_mpiguard: h.nrnmpi_init() not executed')
+        time.sleep(1.)
         sys.stdout.flush()
         time.sleep(1.)
     if import_mpi4py == 2:
         order = 'after'
         from mpi4py import MPI
         print('test_mpiguard: getting past import mpi4py')
+        time.sleep(1.)
         sys.stdout.flush()
         time.sleep(1.)
 
@@ -69,12 +75,14 @@ def main(import_mpi4py, run_nrnmpi_init, procs_per_worker, sleep):
     else:
         print('test_mpiguard: mpi4py not imported: process id: %i; global rank: %i / %i; local rank: %i / %i' %
               (os.getpid(), global_rank, global_size, rank, size))
+    time.sleep(1.)
     sys.stdout.flush()
     time.sleep(1.)
 
     pc.runworker()
-
+    time.sleep(1.)
     print('test_mpiguard: got past pc.runworker()')
+    time.sleep(1.)
     sys.stdout.flush()
     time.sleep(1.)
 
@@ -86,7 +94,9 @@ def main(import_mpi4py, run_nrnmpi_init, procs_per_worker, sleep):
         os._exit(1)
 
     pc.done()
+    time.sleep(1.)
     print('test_mpiguard: got past pc.done()')
+    time.sleep(1.)
     sys.stdout.flush()
     time.sleep(1.)
 
@@ -94,6 +104,9 @@ def main(import_mpi4py, run_nrnmpi_init, procs_per_worker, sleep):
     sys.stdout.flush()
     time.sleep(1.)
     h.quit()
+    time.sleep(1.)
+    sys.stdout.flush()
+    time.sleep(1.)
 
 
 if __name__ == '__main__':

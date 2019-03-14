@@ -351,12 +351,13 @@ void BBSDirect::done() {
 	done_ = true;
 	nrnmpi_unref(sendbuf_);
 	sendbuf_ = nrnmpi_newbuf(20);
-#if debug
-printf("done: numprocs_bbs=%d\n", nrnmpi_numprocs_bbs);
-#endif
+
+	printf("done: numprocs_bbs=%d\n", nrnmpi_numprocs_bbs);
+	fflush(stdout);
 	for (i=1; i < nrnmpi_numprocs_bbs; ++i) {
 		nrnmpi_bbssend(i, QUIT, sendbuf_);
-//printf("kill %d\n", i);
+		printf("kill %d\n", i);
+		fflush(stdout);
 	}
 	BBSDirectServer::server_->done();
 }
