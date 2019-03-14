@@ -1,10 +1,12 @@
 import sys
 import os
 import time
+
 from mpi4py import MPI
 print('diagnoise_h_quit: getting past import mpi4py')
 sys.stdout.flush()
 time.sleep(1.)
+
 from neuron import h
 print('diagnoise_h_quit: getting past from neuron import h')
 sys.stdout.flush()
@@ -28,7 +30,6 @@ print('diagnoise_h_quit: process id: %i; global rank: %i / %i; local rank: %i / 
 sys.stdout.flush()
 time.sleep(1.)
 
-
 pc.runworker()
 print('diagnoise_h_quit: got past pc.runworker()')
 sys.stdout.flush()
@@ -45,13 +46,13 @@ pc.done()
 print('diagnoise_h_quit: got past pc.done()')
 sys.stdout.flush()
 time.sleep(1.)
-# os._exit(1)
 
-MPI.Finalize()
+"""
+comm.abort()  # os._exit(1)
 print('diagnoise_h_quit: MPI.Is_finalized(): %s' % str(MPI.Is_finalized()))
 sys.stdout.flush()
 time.sleep(1.)
-
+"""
 
 print('diagnoise_h_quit: calling h_quit()')
 sys.stdout.flush()

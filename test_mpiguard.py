@@ -7,7 +7,6 @@ import click
 @click.command(context_settings=dict(ignore_unknown_options=True, allow_extra_args=True))
 @click.option('--import-mpi4py', type=int, default=0)
 @click.option('--run-nrnmpi-init', type=bool, default=True)
-@click.option('--h-quit', is_flag=True)
 @click.option('--procs-per-worker', type=int, default=1)
 @click.option('--sleep', type=float, default=0.)
 def main(import_mpi4py, run_nrnmpi_init, h_quit, procs_per_worker, sleep):
@@ -87,15 +86,14 @@ def main(import_mpi4py, run_nrnmpi_init, h_quit, procs_per_worker, sleep):
         os._exit(1)
 
     pc.done()
-    if h_quit:
-        print('calling h_quit')
-        sys.stdout.flush()
-        time.sleep(1.)
-        h.quit()
-    else:
-        print('trying to exit without calling h_quit')
-        sys.stdout.flush()
-        time.sleep(1.)
+    print('test_mpiguard: got past pc.done()')
+    sys.stdout.flush()
+    time.sleep(1.)
+
+    print('calling h_quit')
+    sys.stdout.flush()
+    time.sleep(1.)
+    h.quit()
 
 
 if __name__ == '__main__':
