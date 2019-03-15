@@ -3,6 +3,10 @@ import os
 import time
 import click
 try:
+    from mpi4py import MPI
+except:
+    raise ImportError('test_pc_submit_limits: problem with importing from mpi4py')
+try:
     from neuron import h
 except ImportError:
     raise ImportError('test_pc_submit_limits: problem with importing neuron')
@@ -10,10 +14,7 @@ try:
     h.nrnmpi_init()
 except:
     raise RuntimeError('test_pc_submit_limits: problem initializing nrnmpi')
-try:
-    from mpi4py import MPI
-except:
-    raise ImportError('test_pc_submit_limits: problem with importing from mpi4py')
+
 
 
 class Context(object):
