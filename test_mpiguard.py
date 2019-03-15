@@ -14,7 +14,6 @@ def main(import_mpi4py, run_nrnmpi_init, procs_per_worker, sleep):
 
     :param import_mpi4py: int
     :param run_nrnmpi_init: bool
-    :param h_quit: bool
     :param procs_per_worker: int
     :param sleep: float
     """

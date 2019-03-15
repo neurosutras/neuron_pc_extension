@@ -295,6 +295,7 @@ void BBSClient::return_args(int userid) {
 }
 
 void BBSClient::done() {
+    extern void (*p_nrnpython_finalize)();
 #if debug
 printf("%d BBSClient::done\n", nrnmpi_myid_bbs);
 fflush(stdout);
@@ -309,14 +310,11 @@ fflush(stdout);
 #if defined(USE_PYTHON)
 	if (p_nrnpython_start) { (*p_nrnpython_start)(0);}
 #endif
-	printf("Before done(): %d\n", nrnmpi_myid);
-	fflush(stdout);	
 	BBSImpl::done();
-	printf("After done(): %d\n", nrnmpi_myid);
-	fflush(stdout);
 	nrnmpi_terminate();
-	printf("After nrnmpi_terminate(): %d\n", nrnmpi_myid);
-	fflush(stdout);
+	if (p_nrnpython_finalize) { (*p_nrnpython_finalize)(); }
+    printf("exit rank %d\n", nrnmpi_myid_world);
+    fflush(stdout);
 	exit(0);
 }
 
